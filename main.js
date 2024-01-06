@@ -32,16 +32,15 @@ async function showDog() {
         const response = await fetch(url);
         const responseObject = await response.json();
         const firstChild = container.firstChild;
-        const notFoundParagraph = document.getElementById('not-found');
+        const paragraph = document.createElement('p');
+        paragraph.textContent = 'Breed not found!';
         if (responseObject.status === 'error') {
-            if (!notFoundParagraph) {
-                if (firstChild) {
-                    firstChild.remove();
-                }
-                const paragraph = document.createElement('p');
-                container.insertAdjacentHTML("beforebegin", "<p id='not-found'>Breed not found!</p>");
+            if (firstChild) {
+                firstChild.remove();
+                container.appendChild(paragraph);
                 return;
             } else {
+                container.appendChild(paragraph);
                 return;
             }
         }
@@ -52,11 +51,12 @@ async function showDog() {
         if (firstChild) {
             firstChild.remove();
             container.appendChild(image);
+            const img = document.body.querySelector("img");
+            console.log(img);
         } else {
-            if (notFoundParagraph) {
-                notFoundParagraph.remove();
-            }
             container.appendChild(image);
+            const img = document.body.querySelector("img");
+            console.log(img);
         }
     } catch (error) {
         console.log(error.errorMessage);
