@@ -1,66 +1,36 @@
-'use strict';
-
 const container = document.querySelector('#content');
-const button = document.getElementById('button-random-dog');
 let dogBreed;
-const inputField = document.getElementById('input-breed');
-const showBreedButton = document.getElementById('button-show-breed');
+const randomDogUrl = 'https://dog.ceo/api/breeds/image/random';
 
-
-async function addRandomImage() {
+async function showDogImage(url) {
     try {
-        const response = await fetch('https://dog.ceo/api/breeds/image/random');
-        const responseObject = await response.json();
-        const imageURL = responseObject.message;
-        const image = document.createElement('img');
-        image.src = imageURL;
-        const firstChild = container.firstChild;
-        if (firstChild) {
-            firstChild.remove();
-            container.appendChild(image);
-        } else {
-            container.appendChild(image);
-        }
-    } catch (error) {
-        console.log(error.errorMessage);
-    }
-}
-
-async function showDog() {
-    try {
-        const url = 'https://dog.ceo/api/breed/' + dogBreed + '/images';
         const response = await fetch(url);
         const responseObject = await response.json();
-        const firstChild = container.firstChild;
-        const paragraph = document.createElement('p');
-        paragraph.textContent = 'Breed not found!';
         if (responseObject.status === 'error') {
-            if (firstChild) {
-                firstChild.replaceWith(paragraph);
-                return;
-            } else {
-                container.appendChild(paragraph);
-                return;
-            }
+            container.innerHTML = '<p>Breed not found!</p>';
+            return;
         }
         const imageURL = responseObject.message;
-        const image = document.createElement('img');
-        const random = imageURL.length > 1 ? Math.floor(Math.random() * imageURL.length) : 0;
-        image.src = imageURL[random];
-        if (firstChild) {
-            firstChild.replaceWith(image);
+        if (!Array.isArray(imageURL)) {
+            container.innerHTML = `<img src="${imageURL}">`;
         } else {
-            container.appendChild(image);
+            const random = imageURL.length > 1 ? Math.floor(Math.random() * imageURL.length) : 0;
+            container.innerHTML = `<img src="${imageURL[random]}">`;
         }
     } catch (error) {
         console.log(error.errorMessage);
     }
 }
 
-button.addEventListener('click', addRandomImage);
+document.getElementById('button-random-dog').addEventListener('click', function () {
+    showDogImage(randomDogUrl);
+});
 
-inputField.addEventListener('input', (e) => {
+document.getElementById('input-breed').addEventListener('input', (e) => {
     dogBreed = e.target.value.toLowerCase();
 });
 
-showBreedButton.addEventListener('click', showDog);
+document.getElementById('button-show-breed').addEventListener('click', function () {
+    const breedDogUrl = 'https://dog.ceo/api/breed/' + dogBreed + '/images';
+    showDogImage(breedDogUrl);
+});
