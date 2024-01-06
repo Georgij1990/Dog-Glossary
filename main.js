@@ -1,6 +1,6 @@
 'use strict';
 
-const container = document.getElementById('content');
+const container = document.querySelector('#content');
 const button = document.getElementById('button-random-dog');
 let dogBreed;
 const inputField = document.getElementById('input-breed');
@@ -36,8 +36,7 @@ async function showDog() {
         paragraph.textContent = 'Breed not found!';
         if (responseObject.status === 'error') {
             if (firstChild) {
-                firstChild.remove();
-                container.appendChild(paragraph);
+                firstChild.replaceWith(paragraph);
                 return;
             } else {
                 container.appendChild(paragraph);
@@ -49,14 +48,9 @@ async function showDog() {
         const random = imageURL.length > 1 ? Math.floor(Math.random() * imageURL.length) : 0;
         image.src = imageURL[random];
         if (firstChild) {
-            firstChild.remove();
-            container.appendChild(image);
-            const img = document.body.querySelector("img");
-            console.log(img);
+            firstChild.replaceWith(image);
         } else {
             container.appendChild(image);
-            const img = document.body.querySelector("img");
-            console.log(img);
         }
     } catch (error) {
         console.log(error.errorMessage);
@@ -65,7 +59,7 @@ async function showDog() {
 
 button.addEventListener('click', addRandomImage);
 
-inputField.addEventListener('change', (e) => {
+inputField.addEventListener('input', (e) => {
     dogBreed = e.target.value.toLowerCase();
 });
 
