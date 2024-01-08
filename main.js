@@ -22,6 +22,34 @@ async function showDogImage(url) {
     }
 }
 
+async function shwSubBreed() {
+    try {
+        const url = 'https://dog.ceo/api/breed/' + dogBreed + '/list';
+        const response = await fetch(url);
+        const responseObject = await response.json();
+        if (responseObject.status === 'error') {
+            container.innerHTML = '<p>Breed not found!</p>';
+            return;
+        }
+        const imageURL = responseObject.message;
+        if (imageURL.length === 0) {
+            container.innerHTML = '<p>No sub-breeds found!</p>';
+        } else {
+            container.innerHTML = returnOrderedList(imageURL);
+        }
+    } catch (error) {
+        console.log(error.errorMessage);
+    }
+}
+
+function returnOrderedList(arr) {
+    let orderedList = '<ol type="1">';
+    arr.forEach(e => {
+        orderedList += '<li>' + e + '</li>';
+    });
+    return orderedList + '</ol>';
+}
+
 document.getElementById('button-random-dog').addEventListener('click', function () {
     showDogImage(randomDogUrl);
 });
@@ -34,3 +62,5 @@ document.getElementById('button-show-breed').addEventListener('click', function 
     const breedDogUrl = 'https://dog.ceo/api/breed/' + dogBreed + '/images';
     showDogImage(breedDogUrl);
 });
+
+document.getElementById('button-show-sub-breed').addEventListener('click', shwSubBreed);
