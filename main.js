@@ -11,31 +11,15 @@ async function showDogImage(url) {
             return;
         }
         const imageURL = responseObject.message;
-        if (!Array.isArray(imageURL)) {
-            container.innerHTML = `<img src="${imageURL}">`;
+        if (url.includes('/list')) {
+            imageURL.length === 0 ? container.innerHTML = '<p>No sub-breeds found!</p>' : container.innerHTML = returnOrderedList(imageURL);
         } else {
-            const random = imageURL.length > 1 ? Math.floor(Math.random() * imageURL.length) : 0;
-            container.innerHTML = `<img src="${imageURL[random]}">`;
-        }
-    } catch (error) {
-        console.log(error.errorMessage);
-    }
-}
-
-async function shwSubBreed() {
-    try {
-        const url = 'https://dog.ceo/api/breed/' + dogBreed + '/list';
-        const response = await fetch(url);
-        const responseObject = await response.json();
-        if (responseObject.status === 'error') {
-            container.innerHTML = '<p>Breed not found!</p>';
-            return;
-        }
-        const imageURL = responseObject.message;
-        if (imageURL.length === 0) {
-            container.innerHTML = '<p>No sub-breeds found!</p>';
-        } else {
-            container.innerHTML = returnOrderedList(imageURL);
+            if (!Array.isArray(imageURL)) {
+                container.innerHTML = `<img src="${imageURL}">`;
+            } else {
+                const random = imageURL.length > 1 ? Math.floor(Math.random() * imageURL.length) : 0;
+                container.innerHTML = `<img src="${imageURL[random]}">`;
+            }
         }
     } catch (error) {
         console.log(error.errorMessage);
@@ -63,4 +47,7 @@ document.getElementById('button-show-breed').addEventListener('click', function 
     showDogImage(breedDogUrl);
 });
 
-document.getElementById('button-show-sub-breed').addEventListener('click', shwSubBreed);
+document.getElementById('button-show-sub-breed').addEventListener('click', function () {
+    const subBreedUrl = 'https://dog.ceo/api/breed/' + dogBreed + '/list';
+    showDogImage(subBreedUrl);
+});
